@@ -87,7 +87,7 @@
  
                 // 2.ERROR ENGINE
                 if(this.allowedCharset!=null&&!this.errorFlag) {
-                    var allowed=          new RegExp (this.allowedCharset);               
+                    var allowed=          new RegExp (this.allowedCharset);
                     this.errorFlag=       (!allowed.test  (Value));
                 };
 
@@ -168,19 +168,15 @@
             generateMessage:function (errorTernaryFlag) {  
                
                 // 1. CHOOSE THE CORRECT MESSAGE
-                console.log("sono su generateMessage, il value è "+this.content+", errorFlag è "+this.errorFlag+", warningFlag è "+this.warningFlag+" errorTernaryFlag è "+errorTernaryFlag);
                 if (errorTernaryFlag==-1) {
                   return this.errorMessage;
-                  console.log("ritorna il messaggio di errore:"+this.errorMessage);
                 }
                 else if (errorTernaryFlag==1) {
                   return this.warningMessage;
-                  console.log("ritorna il messaggio di warning:"+this.warningMessage);
                 }
                 else {
                   if (this.enableOkMessage) {
                     return this.okMessage;
-                    console.log("ritorna il messaggio di ok:"+this.okMessage);
                   }
                   else {
                     return null;
