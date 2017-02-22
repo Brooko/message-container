@@ -1,103 +1,65 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <dom-module id="message-container">
   <template>
       <style>
-        :host {
-          display: block;
-        }
-
-        .messageError{
-          color:var(--message-container-error-text-color,darkred); 
-          background-color: var(--message-container-error-background-color,rgba(245, 0, 0, 0.60));
-          
+        .message {
           margin-top: 2%;
           margin-bottom: 2%;
+          padding:2% 2% 2% 2%;
+          font-size:var(--message-container-text-size,12px);
+        }
 
-          font-size:var(--message-container-error-text-size,12px);
-
-          padding-top:2%;
-          padding-bottom:2%;
-          padding-left: 2%;
-          padding-right: 2%;
-
+        .error{
+          color:var(--message-container-error-text-color,darkred); 
+          background-color: var(--message-container-error-background-color,rgba(245, 0, 0, 0.60));  
           border-left:var(--message-container-error-border-left,6px solid darkred);
-
           box-shadow:var(--message-container-error-box-shadow, 0 2px 4px 0 rgba(245, 0, 0, 0.25), 0 4px 10px 0 rgba(245, 0, 0, 0.2));
         }
 
-        .messageOk{
+        .ok{
           color:var(--message-container-ok-text-color,darkgreen); 
           background-color:var(--message-container-ok-background-color,rgba(0, 245, 0, 0.60));
-          
-          margin-top: 2%;
-          margin-bottom: 2%;
-
-          font-size:var(--message-container-ok-text-size,12px);
-
-          padding-top:2%;
-          padding-bottom:2%;
-          padding-left: 2%;
-          padding-right: 2%;
-
           border-left:var(--message-container-ok-border-left,6px solid darkgreen);
-
           box-shadow:var(--message-container-ok-box-shadow,0 2px 4px 0 rgba(0, 245, 0, 0.25), 0 4px 10px 0 rgba(0, 245, 0, 0.2));
         }
 
-        .messageOk[hideOk]{
+        .ok[hideOk]{
           display:none;
         }
 
-        .messageWarning{
+        .warning{
           color: var(--message-container-warning-text-color,rgb(139,139,0));
           background-color: var(--message-container-warning-background-color,rgba(245, 245, 0, 0.60));
-          margin-top: 2%;
-          margin-bottom: 2%;
-
-          font-size: var(--message-container-warning-text-size,12px);
-
-          padding-top:2%;
-          padding-bottom:2%;
-          padding-left: 2%;
-          padding-right: 2%;
-
           border-left: var(--message-container-warning-border-left,6px solid rgb(139,139,0));
-
           box-shadow: var (--message-container-warning-box-shadow,0 2px 4px 0 rgba(245, 245, 0, 0.25), 0 4px 10px 0 rgba(245, 245, 0, 0.2));
         }
       </style>
 
-      <div class$="[[generateClass()]]">
-        <i class$="[[generateMessageIcon()]]"></i> [[generateMessage()]]
+      <div class$="[[generateClass(errorFlag,warningFlag,message)]]">
+        <i class$="[[generateMessageIcon(errorFlag,warningFlag,message)]]"></i> [[generateMessage(errorFlag,warningFlag,message)]]
       </div>
       
   </template>
   
   <script>
         Polymer({
-            
-            // FUNTCION _valueChanged: observer for content property            
-            _flagsChanged:function(){
-              this.generateClass();
-              this.generateMessage();
-              this.generateMessageIcon();
-            },
 
+            is: 'message-container',
+            
             // FUNTCION generateClass: Generate the correct class
-            generateClass:function () {
+            generateClass:function (errorFlag,warningFlag) {
                 
                 // 1. CHOOSE THE CORRECT CLASS
-                if (this.errorFlag) {
-                  return "messageError";
+                if (errorFlag) {
+                  return "message error";
                 }
-                else if (this.warningFlag) {
-                  return "messageWarning";
+                else if (warningFlag) {
+                  return "message warning";
                 }
                 else {
                   if (!this.hideOk) {
-                    return "messageOk";
+                    return "message ok";
                     }
                     else {
                       return null;
@@ -106,18 +68,17 @@
             },    
 
             // FUNTCION generateMessage: Generate the correct message
-            generateMessage:function () {  
-               
+            generateMessage:function (errorFlag,warningFlag,message) {  
+               console.log("Sono passato per generateMessage con errorFlag "+this.errorFlag);
                 // 1. CHOOSE THE CORRECT MESSAGE
-                if (this.errorFlag) {
-                  return this.errorMessage;
-                }
-                else if (this.warningFlag) {
-                  return this.warningMessage;
+                if (this.errorFlag||this.warningFlag) {
+                  console.log("il messaggio è "+this.message);
+                  return this.message;
                 }
                 else {
                   if (!this.hideOk) {
                     return this.okMessage;
+                    console.log(this.okMessage);
                   }
                   else {
                     return null;
@@ -126,7 +87,7 @@
             }, 
 
             // FUNTCION generateClass: Generate the correct icon. Future feature: CSS implementation (icon customizable)
-            generateMessageIcon:function () {
+            generateMessageIcon:function (errorFlag,warningFlag,message) {
                 
                 // 1. CHOOSE THE CORRECT CLASS
                 if (this.errorFlag) {
@@ -144,45 +105,38 @@
                     };
                 };
             },       
-                       
-            is: 'message-container',
-        
+            _mC:function(e) {
+              console.log(e)
+            },
             properties:{
+              message:{
+                type:String,
+                value:"ERR/WARN",
+                observer:"_mC"
+              },
+              
+              // ERROR PROPRETIES
+              errorFlag:{
+                type:Boolean,
+                value:false,
+              },
 
-            // ERROR PROPRETIES
-            errorFlag:{
-              type:Boolean,
-              value:false,
-              observer:"_flagsChanged",
-            },
-
-            errorMessage:{
-              type:String,
-              value:"Content denied",
-            },
-
-            // OK PROPRETIES
-            hideOk:{
-              type:Boolean,
-              value:true,
-            },
-            
-            okMessage:{
-              type:String,
-              value:"Content allowed",
-            },    
-  
-            // WARNINGS PROPRETIES
-            warningFlag:{
-              type:Boolean,
-              value:false,
-              observer:"_flagsChanged",
-            },    
-            
-            warningMessage:{
-              type:String,
-              value:"Be careful",
-            },           
+              // OK PROPRETIES
+              hideOk:{
+                type:Boolean,
+                value:false,
+              },
+              
+              okMessage:{
+                type:String,
+                value:"Content allowed",
+              },    
+    
+              // WARNINGS PROPRETIES
+              warningFlag:{
+                type:Boolean,
+                value:false,
+            },      
           },
         }); 
     </script>
