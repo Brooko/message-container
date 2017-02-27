@@ -46,7 +46,7 @@
         Polymer({
 
             is: 'message-container',
-            
+
             // FUNTCION generateClass: Generate the correct class
             generateClass:function (errorFlag,warningFlag) {
                 
@@ -69,16 +69,13 @@
 
             // FUNTCION generateMessage: Generate the correct message
             generateMessage:function (errorFlag,warningFlag,message) {  
-               console.log("Sono passato per generateMessage con errorFlag "+this.errorFlag);
                 // 1. CHOOSE THE CORRECT MESSAGE
                 if (this.errorFlag||this.warningFlag) {
-                  console.log("il messaggio è "+this.message);
                   return this.message;
                 }
                 else {
                   if (!this.hideOk) {
                     return this.okMessage;
-                    console.log(this.okMessage);
                   }
                   else {
                     return null;
@@ -105,14 +102,11 @@
                     };
                 };
             },       
-            _mC:function(e) {
-              console.log(e)
-            },
+
             properties:{
               message:{
                 type:String,
                 value:"ERR/WARN",
-                observer:"_mC"
               },
               
               // ERROR PROPRETIES
@@ -125,6 +119,7 @@
               hideOk:{
                 type:Boolean,
                 value:false,
+                notify:true,
               },
               
               okMessage:{
@@ -136,7 +131,13 @@
               warningFlag:{
                 type:Boolean,
                 value:false,
-            },      
+              },
+
+              digits:{
+                type:Number,
+                value:8,
+                notify:true,
+              },
           },
         }); 
     </script>
